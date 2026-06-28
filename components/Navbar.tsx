@@ -1,19 +1,49 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import InstagramIcon from "./InstagramIcon";
 
 const navLinks = [
-  { label: "Works", href: "#works" },
+  { label: "Work", href: "#work" },
   { label: "Gallery", href: "#gallery" },
   { label: "Services", href: "#services" },
   { label: "Process", href: "#process" },
-  { label: "Contact", href: "#contact" },
+  { label: "Studio", href: "#studio" },
 ];
+
+function Wordmark() {
+  return (
+    <a href="#" className="flex items-center gap-2.5 no-underline">
+      <span
+        className="flex items-center justify-center shrink-0"
+        style={{
+          width: "2.25rem",
+          height: "2.25rem",
+          background: "linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)",
+          borderRadius: "8px",
+          boxShadow: "0 0 16px rgba(124,58,237,0.35)",
+        }}
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 1L14 4.5V11.5L8 15L2 11.5V4.5L8 1Z" stroke="white" strokeWidth="1.5" strokeLinejoin="round" />
+          <path d="M8 1V15M2 4.5L14 11.5M14 4.5L2 11.5" stroke="white" strokeWidth="1" strokeOpacity="0.5" />
+        </svg>
+      </span>
+      <span
+        className="serif"
+        style={{ fontSize: "1.0625rem", fontWeight: 500, color: "var(--color-bone)", letterSpacing: "0.01em" }}
+      >
+        Objectify <span style={{ fontStyle: "italic", color: "var(--color-violet-200)" }}>3D</span>
+      </span>
+    </a>
+  );
+}
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -21,15 +51,23 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // While the mobile menu is open: lock body scroll and close on Escape.
   useEffect(() => {
     if (menuOpen) {
       document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
+      const onKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
+          setMenuOpen(false);
+          toggleRef.current?.focus();
+        }
+      };
+      document.addEventListener("keydown", onKeyDown);
+      return () => {
+        document.body.style.overflow = "";
+        document.removeEventListener("keydown", onKeyDown);
+      };
     }
-    return () => {
-      document.body.style.overflow = "";
-    };
+    document.body.style.overflow = "";
   }, [menuOpen]);
 
   return (
@@ -44,131 +82,92 @@ export default function Navbar() {
           left: 0,
           right: 0,
           zIndex: 100,
-          transition: "all 0.4s ease",
-          background: scrolled ? "rgba(7,7,14,0.88)" : "transparent",
+          transition: "background 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease",
+          background: scrolled ? "rgba(7,7,14,0.85)" : "transparent",
           backdropFilter: scrolled ? "blur(24px)" : "none",
           WebkitBackdropFilter: scrolled ? "blur(24px)" : "none",
-          borderBottom: scrolled
-            ? "1px solid rgba(255,255,255,0.05)"
-            : "1px solid transparent",
+          borderBottom: scrolled ? "1px solid var(--color-line-soft)" : "1px solid transparent",
         }}
       >
         <div
+          className="mx-auto flex items-center justify-between"
           style={{
             maxWidth: "1280px",
-            margin: "0 auto",
-            padding: scrolled ? "1rem 2rem" : "1.5rem 2rem",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
+            padding: scrolled ? "0.9rem 1.5rem" : "1.4rem 1.5rem",
             transition: "padding 0.4s ease",
           }}
         >
-          {/* Logo */}
-          <a href="#" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "0.625rem" }}>
-            <div
-              style={{
-                width: "2.25rem",
-                height: "2.25rem",
-                background: "linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)",
-                borderRadius: "8px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-                boxShadow: "0 0 16px rgba(124,58,237,0.4)",
-              }}
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M8 1L14 4.5V11.5L8 15L2 11.5V4.5L8 1Z" stroke="white" strokeWidth="1.5" strokeLinejoin="round"/>
-                <path d="M8 1V15M2 4.5L14 11.5M14 4.5L2 11.5" stroke="white" strokeWidth="1" strokeOpacity="0.5"/>
-              </svg>
-            </div>
-            <div>
-              <span
-                style={{
-                  display: "block",
-                  color: "#f8fafc",
-                  fontSize: "0.8125rem",
-                  fontWeight: 700,
-                  letterSpacing: "0.18em",
-                  textTransform: "uppercase",
-                  lineHeight: 1,
-                }}
-              >
-                Objectify{" "}
-                <span style={{ color: "#a78bfa" }}>3D</span>
-              </span>
-            </div>
-          </a>
+          <Wordmark />
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-9">
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
+                className="no-underline"
                 style={{
-                  color: "#94a3b8",
-                  fontSize: "0.75rem",
+                  color: "var(--color-mist)",
+                  fontSize: "0.8125rem",
                   fontWeight: 500,
-                  letterSpacing: "0.08em",
-                  textDecoration: "none",
-                  textTransform: "uppercase",
+                  letterSpacing: "0.02em",
                   transition: "color 0.2s ease",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#f8fafc")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "#94a3b8")}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-bone)")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-mist)")}
               >
                 {link.label}
               </a>
             ))}
           </nav>
 
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-5">
             <a
               href="https://www.instagram.com/objectify3d/"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Objectify 3D on Instagram"
+              className="no-underline"
+              style={{ color: "var(--color-mist)", transition: "color 0.2s ease", display: "flex" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-violet-200)")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-mist)")}
+            >
+              <InstagramIcon size={18} />
+            </a>
+            <a
+              href="#contact"
+              className="no-underline"
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.4rem",
-                padding: "0.5rem 1.25rem",
-                background: "linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)",
-                color: "white",
-                fontSize: "0.75rem",
-                fontWeight: 600,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
+                padding: "0.55rem 1.35rem",
+                border: "1px solid var(--color-line)",
+                color: "var(--color-bone)",
+                fontSize: "0.8125rem",
+                fontWeight: 500,
+                letterSpacing: "0.02em",
                 borderRadius: "9999px",
-                textDecoration: "none",
-                transition: "opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease",
-                boxShadow: "0 0 0 rgba(124,58,237,0)",
+                transition: "border-color 0.2s ease, background 0.2s ease",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.opacity = "0.9";
-                e.currentTarget.style.transform = "translateY(-1px)";
-                e.currentTarget.style.boxShadow = "0 4px 20px rgba(124,58,237,0.4)";
+                e.currentTarget.style.borderColor = "rgba(167,139,250,0.5)";
+                e.currentTarget.style.background = "rgba(124,58,237,0.08)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.opacity = "1";
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "0 0 0 rgba(124,58,237,0)";
+                e.currentTarget.style.borderColor = "var(--color-line)";
+                e.currentTarget.style.background = "transparent";
               }}
             >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-              </svg>
-              Instagram
+              Start a Commission
             </a>
           </div>
 
           {/* Mobile hamburger */}
           <button
+            ref={toggleRef}
             className="md:hidden flex flex-col gap-1.5 p-2"
             onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle menu"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
             style={{ background: "none", border: "none", cursor: "pointer" }}
           >
             <span
@@ -176,7 +175,7 @@ export default function Navbar() {
                 display: "block",
                 width: "22px",
                 height: "1.5px",
-                background: "#f8fafc",
+                background: "var(--color-bone)",
                 transition: "transform 0.3s ease, opacity 0.3s ease",
                 transform: menuOpen ? "translateY(4.5px) rotate(45deg)" : "none",
               }}
@@ -186,7 +185,7 @@ export default function Navbar() {
                 display: "block",
                 width: "22px",
                 height: "1.5px",
-                background: "#f8fafc",
+                background: "var(--color-bone)",
                 transition: "opacity 0.3s ease",
                 opacity: menuOpen ? 0 : 1,
               }}
@@ -196,7 +195,7 @@ export default function Navbar() {
                 display: "block",
                 width: "22px",
                 height: "1.5px",
-                background: "#f8fafc",
+                background: "var(--color-bone)",
                 transition: "transform 0.3s ease, opacity 0.3s ease",
                 transform: menuOpen ? "translateY(-4.5px) rotate(-45deg)" : "none",
               }}
@@ -209,6 +208,7 @@ export default function Navbar() {
       <AnimatePresence>
         {menuOpen && (
           <motion.div
+            id="mobile-menu"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -217,13 +217,13 @@ export default function Navbar() {
               position: "fixed",
               inset: 0,
               zIndex: 90,
-              background: "rgba(7,7,14,0.97)",
+              background: "rgba(5,5,9,0.97)",
               backdropFilter: "blur(20px)",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              gap: "2.5rem",
+              gap: "2.25rem",
             }}
           >
             {navLinks.map((link, i) => (
@@ -234,42 +234,36 @@ export default function Navbar() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.07 + 0.1 }}
                 onClick={() => setMenuOpen(false)}
+                className="serif no-underline"
                 style={{
-                  color: "#f1f5f9",
-                  fontSize: "2rem",
-                  fontWeight: 700,
-                  letterSpacing: "0.05em",
-                  textDecoration: "none",
-                  textTransform: "uppercase",
-                  transition: "color 0.2s ease",
+                  color: "var(--color-bone)",
+                  fontSize: "2.25rem",
+                  fontWeight: 500,
+                  letterSpacing: "-0.01em",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#a78bfa")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "#f1f5f9")}
               >
                 {link.label}
               </motion.a>
             ))}
             <motion.a
-              href="https://www.instagram.com/objectify3d/"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#contact"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
+              onClick={() => setMenuOpen(false)}
+              className="no-underline"
               style={{
-                marginTop: "1rem",
-                padding: "0.75rem 2rem",
-                background: "linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)",
-                color: "white",
-                fontSize: "0.875rem",
-                fontWeight: 600,
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
+                marginTop: "0.75rem",
+                padding: "0.8rem 2rem",
+                border: "1px solid var(--color-line)",
+                color: "var(--color-bone)",
+                fontSize: "0.9375rem",
+                fontWeight: 500,
+                letterSpacing: "0.04em",
                 borderRadius: "9999px",
-                textDecoration: "none",
               }}
             >
-              Instagram
+              Start a Commission
             </motion.a>
           </motion.div>
         )}

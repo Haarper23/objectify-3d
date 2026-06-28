@@ -1,118 +1,112 @@
+import InstagramIcon from "./InstagramIcon";
+
+const navLinks = [
+  { label: "Work", href: "#work" },
+  { label: "Gallery", href: "#gallery" },
+  { label: "Services", href: "#services" },
+  { label: "Process", href: "#process" },
+  { label: "Studio", href: "#studio" },
+];
+
 export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
     <footer
       style={{
-        background: "#05050c",
-        borderTop: "1px solid rgba(255,255,255,0.05)",
-        padding: "3rem 2rem",
+        background: "var(--color-ink-900)",
+        borderTop: "1px solid var(--color-line-soft)",
+        padding: "clamp(3.5rem, 7vw, 5.5rem) 1.5rem 3rem",
       }}
     >
-      <div
-        style={{
-          maxWidth: "1280px",
-          margin: "0 auto",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "2rem",
-        }}
-      >
-        {/* Logo */}
-        <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
-          <div
-            style={{
-              width: "2rem",
-              height: "2rem",
-              background: "linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)",
-              borderRadius: "7px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-              <path d="M8 1L14 4.5V11.5L8 15L2 11.5V4.5L8 1Z" stroke="white" strokeWidth="1.5" strokeLinejoin="round"/>
-              <path d="M8 1V15M2 4.5L14 11.5M14 4.5L2 11.5" stroke="white" strokeWidth="1" strokeOpacity="0.5"/>
-            </svg>
-          </div>
-          <span
-            style={{
-              color: "#94a3b8",
-              fontSize: "0.8125rem",
-              fontWeight: 600,
-              letterSpacing: "0.15em",
-              textTransform: "uppercase",
-            }}
-          >
-            Objectify <span style={{ color: "#7c3aed" }}>3D</span>
-          </span>
-        </div>
-
-        {/* Nav links */}
-        <nav style={{ display: "flex", flexWrap: "wrap", gap: "2rem", justifyContent: "center" }}>
-          {["Works", "Gallery", "Services", "Process", "Contact"].map((label) => (
-            <a
-              key={label}
-              href={`#${label.toLowerCase()}`}
-              className="footer-nav-link"
-              style={{
-                fontSize: "0.8125rem",
-                fontWeight: 500,
-                letterSpacing: "0.06em",
-                textDecoration: "none",
-                textTransform: "uppercase",
-              }}
-            >
-              {label}
-            </a>
-          ))}
-        </nav>
-
-        {/* Divider */}
-        <div style={{ width: "100%", maxWidth: "480px", height: "1px", background: "rgba(255,255,255,0.05)" }} />
-
-        {/* Bottom */}
+      <div className="mx-auto" style={{ maxWidth: "1180px" }}>
+        {/* Closing line */}
         <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "1rem",
-            textAlign: "center",
-          }}
+          className="flex flex-col md:flex-row md:items-end md:justify-between"
+          style={{ gap: "2rem", paddingBottom: "3rem", borderBottom: "1px solid var(--color-line-soft)" }}
         >
-          <p style={{ color: "#1e293b", fontSize: "0.8125rem" }}>
-            © {year} Objectify 3D · Mehmet Eren Kiraz
+          <p
+            className="serif"
+            style={{
+              fontSize: "clamp(1.5rem, 3.5vw, 2.25rem)",
+              fontWeight: 400,
+              lineHeight: 1.2,
+              letterSpacing: "-0.015em",
+              color: "var(--color-bone)",
+              maxWidth: "520px",
+            }}
+          >
+            Made by hand.{" "}
+            <span style={{ fontStyle: "italic", color: "var(--color-violet-200)" }}>Shipped worldwide.</span>
           </p>
-          <span style={{ color: "#1e293b", fontSize: "0.8125rem" }}>·</span>
-          <div style={{ display: "flex", gap: "1rem" }}>
-            <a
-              href="https://www.instagram.com/objectify3d/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="footer-social-link"
-              aria-label="Objectify 3D on Instagram"
+          <a
+            href="#contact"
+            className="no-underline inline-flex items-center gap-2 self-start"
+            style={{
+              padding: "0.8rem 1.9rem",
+              border: "1px solid var(--color-line)",
+              color: "var(--color-bone)",
+              fontSize: "0.875rem",
+              fontWeight: 500,
+              borderRadius: "9999px",
+            }}
+          >
+            Start a Commission
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+
+        {/* Columns */}
+        <div
+          className="flex flex-col md:flex-row md:items-center md:justify-between"
+          style={{ gap: "2rem", paddingTop: "2.5rem" }}
+        >
+          {/* Wordmark */}
+          <div className="flex items-center gap-2.5">
+            <span
+              className="flex items-center justify-center"
+              style={{ width: "2rem", height: "2rem", background: "linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)", borderRadius: "7px" }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M8 1L14 4.5V11.5L8 15L2 11.5V4.5L8 1Z" stroke="white" strokeWidth="1.5" strokeLinejoin="round" />
+                <path d="M8 1V15M2 4.5L14 11.5M14 4.5L2 11.5" stroke="white" strokeWidth="1" strokeOpacity="0.5" />
               </svg>
+            </span>
+            <span className="serif" style={{ fontSize: "1rem", fontWeight: 500, color: "var(--color-mist)" }}>
+              Objectify <span style={{ color: "var(--color-violet-200)", fontStyle: "italic" }}>3D</span>
+            </span>
+          </div>
+
+          {/* Nav */}
+          <nav className="flex flex-wrap gap-x-7 gap-y-2">
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="footer-nav-link no-underline"
+                style={{ fontSize: "0.8125rem", fontWeight: 500, letterSpacing: "0.02em" }}
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+
+          {/* Social */}
+          <div className="flex gap-4">
+            <a href="https://www.instagram.com/objectify3d/" target="_blank" rel="noopener noreferrer" className="footer-social-link" aria-label="Objectify 3D on Instagram">
+              <InstagramIcon size={18} />
             </a>
-            <a
-              href="https://www.instagram.com/erenkiraz8/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="footer-social-link"
-              aria-label="Eren Kiraz on Instagram"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-              </svg>
+            <a href="https://www.instagram.com/erenkiraz8/" target="_blank" rel="noopener noreferrer" className="footer-social-link" aria-label="Eren Kiraz on Instagram">
+              <InstagramIcon size={18} />
             </a>
           </div>
         </div>
+
+        <p style={{ marginTop: "2.5rem", fontFamily: "var(--font-mono), monospace", fontSize: "var(--text-caption)", color: "var(--color-faint)" }}>
+          © {year} Objectify 3D · Mehmet Eren Kiraz
+        </p>
       </div>
     </footer>
   );

@@ -1,311 +1,217 @@
 "use client";
 
-import { useRef, useState } from "react";
 import Image from "next/image";
-import { motion, useInView } from "framer-motion";
+import Reveal from "./Reveal";
+import SectionHeader from "./SectionHeader";
+import SpecRow from "./SpecRow";
+import { bySlug, type Work } from "./works";
 
-const featured = [
+/**
+ * A featured commission with just enough presentation metadata to art-direct it.
+ * `ratio` / `objectPosition` keep each framed image stable (no CLS) and figure-
+ * safe — the source photos are portrait product shots, so ratios are chosen to
+ * protect the figure rather than force a landscape crop.
+ */
+type FeaturedStudy = {
+  work: Work;
+  brief: string;
+  layout: "lead" | "portrait" | "wide";
+  ratio: string;
+  objectPosition: string;
+};
+
+const studies: FeaturedStudy[] = [
   {
-    src: "/images/mario-figure.jpeg",
-    alt: "Mario & Luma 3D figure",
-    title: "Mario & Luma",
-    category: "Fan Art Print",
-    description:
-      "Hand-painted and post-processed. A detailed recreation of the iconic duo — complete with golden star base and a swirling cosmic trail.",
-    tags: ["Game-Inspired", "Hand-Painted", "Collectible"],
-    size: "large",
+    work: bySlug("mario-luma"),
+    brief:
+      "A custom recreation of the star-riding duo — golden rockwork base and a swirling cosmic trail rising behind the figure.",
+    layout: "lead",
+    ratio: "5 / 7",
+    objectPosition: "center 38%",
   },
   {
-    src: "/images/gengar-figure.jpeg",
-    alt: "Gengar Pokémon 3D figure",
-    title: "Gengar",
-    category: "Pokémon Collectible",
-    description:
-      "Smooth purple finish with multi-material white teeth and vivid crimson eyes. A standout showpiece for any display shelf.",
-    tags: ["Pokémon", "Stylized Figure"],
-    size: "small",
+    work: bySlug("portrait-miniature"),
+    brief:
+      "A couple miniature built from a single reference photo — poses, clothing, and proportions matched by hand.",
+    layout: "portrait",
+    ratio: "2 / 3",
+    objectPosition: "center 30%",
   },
   {
-    src: "/images/hooded-figure.jpeg",
-    alt: "Mysterious hooded figure",
-    title: "The Silent One",
-    category: "Original Design",
-    description:
-      "A hauntingly elegant original design — matte hoodie, metallic visor, skull detail. Precision down to every wrinkle.",
-    tags: ["Original", "Dark Style"],
-    size: "small",
-  },
-  {
-    src: "/images/couple-figure.jpeg",
-    alt: "Couple portrait miniature",
-    title: "Portrait Miniature",
-    category: "Personalized Gift",
-    description:
-      "A custom couple miniature recreated with stunning realism. Poses, expressions, and clothing all tailored to your exact reference — a truly one-of-a-kind keepsake.",
-    tags: ["Personalized", "Portrait", "Gift"],
-    size: "wide",
+    work: bySlug("gengar"),
+    brief:
+      "A custom display piece — deep purple body, painted eyes, and contrasting multi-material teeth.",
+    layout: "wide",
+    ratio: "3 / 2",
+    objectPosition: "center 30%",
   },
 ];
 
-function WorkCard({
-  item,
-  delay = 0,
+/** Framed, aspect-stable product image with a restrained hover (scale + faint scrim). */
+function ProjectMedia({
+  work,
+  ratio,
+  objectPosition,
+  sizes,
 }: {
-  item: (typeof featured)[0];
-  delay?: number;
+  work: Work;
+  ratio: string;
+  objectPosition: string;
+  sizes: string;
 }) {
-  const [hovered, setHovered] = useState(false);
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-60px 0px" });
-
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 32 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+    <figure
+      className="group relative m-0 overflow-hidden"
       style={{
-        position: "relative",
-        borderRadius: "20px",
-        overflow: "hidden",
-        background: "#0f0f1a",
-        border: "1px solid",
-        borderColor: hovered ? "rgba(124,58,237,0.35)" : "rgba(255,255,255,0.06)",
-        transition: "border-color 0.4s ease, box-shadow 0.4s ease",
-        boxShadow: hovered
-          ? "0 24px 60px rgba(0,0,0,0.5), 0 0 40px rgba(124,58,237,0.12)"
-          : "0 8px 30px rgba(0,0,0,0.3)",
-        cursor: "pointer",
+        borderRadius: "var(--radius-lg)",
+        border: "1px solid var(--color-line)",
+        boxShadow: "var(--shadow-plate)",
       }}
     >
-      {/* Image */}
-      <div
+      <div className="relative w-full" style={{ aspectRatio: ratio, background: "var(--color-ink-700)" }}>
+        <Image
+          src={work.src}
+          alt={work.alt}
+          fill
+          sizes={sizes}
+          className="object-cover transition-transform duration-[650ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-[1.025] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+          style={{ objectPosition }}
+        />
+        {/* Very subtle contrast shift on hover — decorative only, no content */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-[650ms] group-hover:opacity-100 motion-reduce:transition-none"
+          style={{ background: "linear-gradient(to top, rgba(5,5,9,0.28) 0%, transparent 55%)" }}
+        />
+      </div>
+    </figure>
+  );
+}
+
+/**
+ * Project header: title + concise description, with optional minimal specs.
+ * No eyebrow, rule, category label, or number — hierarchy comes from type/space.
+ */
+function StudyText({ study, className }: { study: FeaturedStudy; className?: string }) {
+  const { work, brief, layout } = study;
+  return (
+    <div className={className}>
+      <h3
+        className="serif"
         style={{
-          position: "relative",
-          overflow: "hidden",
-          height: item.size === "large" ? "440px" : item.size === "wide" ? "340px" : "300px",
+          fontSize: layout === "lead" ? "clamp(2rem, 4vw, 3rem)" : "clamp(1.625rem, 3vw, 2.25rem)",
+          fontWeight: 500,
+          letterSpacing: "-0.02em",
+          lineHeight: 1.08,
+          color: "var(--color-bone)",
         }}
       >
-        <Image
-          src={item.src}
-          alt={item.alt}
-          fill
-          style={{
-            objectFit: "cover",
-            transform: hovered ? "scale(1.04)" : "scale(1)",
-            transition: "transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-          }}
-        />
-        {/* Gradient overlay */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "linear-gradient(to top, rgba(7,7,14,0.95) 0%, rgba(7,7,14,0.3) 50%, transparent 100%)",
-            transition: "opacity 0.4s ease",
-          }}
-        />
-        {/* Category badge */}
-        <div
-          style={{
-            position: "absolute",
-            top: "1.25rem",
-            left: "1.25rem",
-            background: "rgba(7,7,14,0.8)",
-            backdropFilter: "blur(8px)",
-            border: "1px solid rgba(124,58,237,0.3)",
-            borderRadius: "9999px",
-            padding: "0.35rem 0.875rem",
-          }}
-        >
-          <span
-            style={{
-              color: "#a78bfa",
-              fontSize: "0.6875rem",
-              fontWeight: 600,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-            }}
-          >
-            {item.category}
-          </span>
-        </div>
-      </div>
+        {work.title}
+      </h3>
 
-      {/* Content */}
-      <div style={{ padding: "1.5rem 1.75rem 1.75rem" }}>
-        <h3
-          style={{
-            color: "#f8fafc",
-            fontSize: "1.25rem",
-            fontWeight: 700,
-            marginBottom: "0.625rem",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          {item.title}
-        </h3>
-        <p
-          style={{
-            color: "#64748b",
-            fontSize: "0.875rem",
-            lineHeight: 1.7,
-            marginBottom: "1.25rem",
-          }}
-        >
-          {item.description}
-        </p>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-          {item.tags.map((tag) => (
-            <span
-              key={tag}
-              style={{
-                background: "rgba(124,58,237,0.1)",
-                border: "1px solid rgba(124,58,237,0.2)",
-                color: "#a78bfa",
-                fontSize: "0.6875rem",
-                fontWeight: 500,
-                letterSpacing: "0.06em",
-                padding: "0.25rem 0.75rem",
-                borderRadius: "9999px",
-              }}
-            >
-              {tag}
-            </span>
-          ))}
+      <p
+        style={{
+          marginTop: "1.1rem",
+          maxWidth: "46ch",
+          color: "var(--color-mist)",
+          fontSize: "var(--text-lead)",
+          lineHeight: 1.75,
+        }}
+      >
+        {brief}
+      </p>
+
+      {work.specs?.length ? (
+        <div style={{ marginTop: "1.5rem" }}>
+          <SpecRow items={work.specs} />
         </div>
+      ) : null}
+    </div>
+  );
+}
+
+function StudyBlock({ study }: { study: FeaturedStudy }) {
+  const { work, layout, ratio, objectPosition } = study;
+
+  // LEAD — image-dominant asymmetric feature (image 7 cols, text rail 5 cols).
+  if (layout === "lead") {
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-12 lg:items-center gap-x-12 gap-y-8">
+        <Reveal className="lg:col-span-7">
+          <ProjectMedia
+            work={work}
+            ratio={ratio}
+            objectPosition={objectPosition}
+            sizes="(min-width: 1200px) 740px, (min-width: 1024px) 58vw, 100vw"
+          />
+        </Reveal>
+        <Reveal delay={0.12} className="lg:col-span-5 lg:col-start-8">
+          <StudyText study={study} />
+        </Reveal>
       </div>
-    </motion.div>
+    );
+  }
+
+  // PORTRAIT — quieter, text-led; narrow portrait image on the right.
+  if (layout === "portrait") {
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-12 lg:items-center gap-x-12 gap-y-8">
+        <Reveal className="order-1 lg:order-2 lg:col-span-5 lg:col-start-8">
+          <ProjectMedia
+            work={work}
+            ratio={ratio}
+            objectPosition={objectPosition}
+            sizes="(min-width: 1200px) 470px, (min-width: 1024px) 42vw, 100vw"
+          />
+        </Reveal>
+        <Reveal delay={0.12} className="order-2 lg:order-1 lg:col-span-6">
+          <StudyText study={study} />
+        </Reveal>
+      </div>
+    );
+  }
+
+  // WIDE — full-width closing band with a concise text block beneath.
+  return (
+    <div>
+      <Reveal>
+        <ProjectMedia
+          work={work}
+          ratio={ratio}
+          objectPosition={objectPosition}
+          sizes="(min-width: 1200px) 1180px, 100vw"
+        />
+      </Reveal>
+      <Reveal delay={0.12}>
+        <StudyText study={study} className="mt-8 lg:mt-10 lg:max-w-2xl" />
+      </Reveal>
+    </div>
   );
 }
 
 export default function FeaturedWorks() {
-  const titleRef = useRef(null);
-  const titleInView = useInView(titleRef, { once: true, margin: "-80px 0px" });
-
-  const [mario, gengar, hooded, couple] = featured;
-
   return (
     <section
-      id="works"
-      style={{
-        background: "#07070e",
-        padding: "8rem 2rem",
-        position: "relative",
-        overflow: "hidden",
-      }}
+      id="work"
+      className="relative overflow-hidden py-20 px-5 md:py-32 md:px-8"
+      style={{ background: "var(--color-ink-800)" }}
     >
-      {/* Background accent */}
-      <div
-        style={{
-          position: "absolute",
-          top: "20%",
-          right: "-15%",
-          width: "60%",
-          height: "60%",
-          background:
-            "radial-gradient(ellipse at center, rgba(79,70,229,0.07) 0%, transparent 65%)",
-          pointerEvents: "none",
-        }}
-      />
+      <div className="relative mx-auto" style={{ maxWidth: "1180px" }}>
+        <SectionHeader
+          overline="Selected Commissions"
+          title="Selected"
+          accent="Work"
+          lead="Custom commissions — designed, printed, and finished by hand. A few recent pieces."
+          className="mb-16 md:mb-24"
+        />
 
-      <div style={{ maxWidth: "1280px", margin: "0 auto", position: "relative" }}>
-        {/* Header */}
-        <div ref={titleRef} style={{ marginBottom: "4rem" }}>
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={titleInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.75rem",
-              marginBottom: "1.25rem",
-            }}
-          >
-            <div
-              style={{
-                width: "2rem",
-                height: "1px",
-                background: "linear-gradient(to right, transparent, #7c3aed)",
-              }}
-            />
-            <span
-              style={{
-                color: "#a78bfa",
-                fontSize: "0.6875rem",
-                fontWeight: 600,
-                letterSpacing: "0.22em",
-                textTransform: "uppercase",
-              }}
-            >
-              Featured Works
-            </span>
-          </motion.div>
-
-          <motion.h2
-            initial={{ opacity: 0, y: 24 }}
-            animate={titleInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            style={{
-              fontSize: "clamp(2rem, 4vw, 3.25rem)",
-              fontWeight: 800,
-              letterSpacing: "-0.025em",
-              color: "#f8fafc",
-              maxWidth: "540px",
-              lineHeight: 1.1,
-            }}
-          >
-            Handcrafted{" "}
-            <span
-              style={{
-                background: "linear-gradient(135deg, #a78bfa 0%, #818cf8 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              Collectibles
-            </span>
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={titleInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            style={{
-              color: "#64748b",
-              fontSize: "1rem",
-              lineHeight: 1.7,
-              maxWidth: "520px",
-              marginTop: "1rem",
-            }}
-          >
-            A selection of recent pieces — each uniquely designed, printed, and
-            finished to collectible standard.
-          </motion.p>
+        <div className="flex flex-col">
+          {studies.map((study, i) => (
+            <div key={study.work.slug} style={i === 0 ? undefined : { marginTop: "clamp(4.5rem, 9vw, 8rem)" }}>
+              <StudyBlock study={study} />
+            </div>
+          ))}
         </div>
-
-        {/* Top row: Mario (large) + Gengar + Hooded */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1.6fr 1fr 1fr",
-            gap: "1.5rem",
-            marginBottom: "1.5rem",
-          }}
-          className="grid-cols-1 lg:!grid-cols-[1.6fr_1fr_1fr]"
-        >
-          <WorkCard item={mario} delay={0} />
-          <WorkCard item={gengar} delay={0.1} />
-          <WorkCard item={hooded} delay={0.2} />
-        </div>
-
-        {/* Bottom row: Couple wide */}
-        <WorkCard item={couple} delay={0.15} />
       </div>
     </section>
   );

@@ -3,10 +3,10 @@ import Hero from "@/components/Hero";
 import About from "@/components/About";
 import FeaturedWorks from "@/components/FeaturedWorks";
 import Gallery from "@/components/Gallery";
+import Manifesto from "@/components/Manifesto";
 import Services from "@/components/Services";
 import Process from "@/components/Process";
-import TrustSection from "@/components/TrustSection";
-import PrinterSection from "@/components/PrinterSection";
+import Studio from "@/components/Studio";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
@@ -18,10 +18,10 @@ export default function Home() {
       <About />
       <FeaturedWorks />
       <Gallery />
+      <Manifesto />
       <Services />
       <Process />
-      <TrustSection />
-      <PrinterSection />
+      <Studio />
       <Contact />
       <Footer />
     </main>

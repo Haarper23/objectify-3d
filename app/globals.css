@@ -1,19 +1,66 @@
 @import "tailwindcss";
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+/*
+  Objectify 3D — design tokens
+  "Workshop Gallery" direction: cool near-black ink scale, warm bone neutral,
+  a single restrained violet accent, and a rare champagne metallic.
+*/
+@theme {
+  /* Ink scale (cool near-blacks / surfaces) */
+  --color-ink-900: #050509;
+  --color-ink-800: #07070e;
+  --color-ink-700: #0a0a15;
+  --color-ink-600: #0f0f1a;
+
+  /* Neutrals */
+  --color-bone: #ece9e2;
+  --color-mist: #94a3b8;
+  --color-faint: #64748b;
+
+  /* Single accent */
+  --color-violet: #7c3aed;
+  --color-violet-200: #a78bfa;
+  --color-violet-600: #4f46e5;
+
+  /* Rare metallic */
+  --color-champagne: #c8b68a;
+
+  /* Hairlines */
+  --color-line: rgba(255, 255, 255, 0.08);
+  --color-line-soft: rgba(255, 255, 255, 0.05);
+
+  /* Fonts (wired in layout.tsx) */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-fraunces);
+
+  /* Fluid editorial type scale */
+  --text-overline: 0.6875rem;
+  --text-caption: 0.8125rem;
+  --text-body: 1rem;
+  --text-lead: clamp(1.0625rem, 1.4vw, 1.1875rem);
+  --text-h3: clamp(1.125rem, 2vw, 1.375rem);
+  --text-h2: clamp(2rem, 4.5vw, 3.5rem);
+  --text-display: clamp(2.75rem, 6.5vw, 5.5rem);
+
+  /* Radii */
+  --radius-card: 16px;
+  --radius-lg: 24px;
+
+  /* Shadows */
+  --shadow-plate: 0 24px 60px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 80px rgba(109, 40, 217, 0.18);
 }
 
 :root {
   --background: #07070e;
-  --foreground: #f1f5f9;
+  --foreground: #ece9e2;
 }
 
 html {
   scroll-behavior: smooth;
+  /* Offset anchor targets so section headings clear the fixed navbar */
+  scroll-padding-top: 6rem;
 }
 
 body {
@@ -41,9 +88,22 @@ body {
   border-radius: 99px;
 }
 
+/* Editorial helpers */
+.serif {
+  font-family: var(--font-serif), Georgia, "Times New Roman", serif;
+}
+.overline {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: var(--text-overline);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-violet-200);
+}
+
 /* Footer hover effects — used by the Server Component footer */
 .footer-nav-link {
-  color: #475569;
+  color: #94a3b8;
   transition: color 0.2s ease;
 }
 .footer-nav-link:hover {
@@ -51,7 +111,7 @@ body {
 }
 
 .footer-social-link {
-  color: #1e293b;
+  color: #64748b;
   transition: color 0.2s ease;
 }
 .footer-social-link:hover {
@@ -65,4 +125,20 @@ body {
 .hero-btn-primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 32px rgba(124, 58, 237, 0.5);
+}
+
+/* Respect users who prefer reduced motion: neutralize transitions/animations
+   and any framer-motion transforms left in the DOM. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
