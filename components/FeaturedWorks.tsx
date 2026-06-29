@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import Reveal from "./Reveal";
 import SectionHeader from "./SectionHeader";
 import SpecRow from "./SpecRow";
@@ -47,7 +48,37 @@ const studies: FeaturedStudy[] = [
   },
 ];
 
-/** Framed, aspect-stable product image with a restrained hover (scale + faint scrim). */
+/** "View Case Study" affordance — arrow nudges right on card hover/focus. */
+function CaseStudyCue() {
+  return (
+    <span
+      className="mt-6 inline-flex items-center gap-2 transition-colors duration-300 group-hover:text-[var(--color-violet-200)] group-focus-within:text-[var(--color-violet-200)]"
+      style={{
+        fontFamily: "var(--font-mono), monospace",
+        fontSize: "var(--text-caption)",
+        letterSpacing: "0.06em",
+        textTransform: "uppercase",
+        color: "var(--color-faint)",
+      }}
+    >
+      View Case Study
+      <svg
+        className="transition-transform duration-300 ease-out group-hover:translate-x-1 group-focus-within:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        aria-hidden="true"
+      >
+        <path d="M5 12h14M12 5l7 7-7 7" />
+      </svg>
+    </span>
+  );
+}
+
+/** Framed, aspect-stable product image with a restrained hover (scale + scrim). */
 function ProjectMedia({
   work,
   ratio,
@@ -60,13 +91,11 @@ function ProjectMedia({
   sizes: string;
 }) {
   return (
-    <figure
-      className="group relative m-0 overflow-hidden"
-      style={{
-        borderRadius: "var(--radius-lg)",
-        border: "1px solid var(--color-line)",
-        boxShadow: "var(--shadow-plate)",
-      }}
+    <Link
+      href={`/work/${work.slug}`}
+      aria-label={`View case study: ${work.title}`}
+      className="block relative m-0 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-line)] transition-[border-color,box-shadow] duration-300 group-hover:border-[rgba(124,58,237,0.3)]"
+      style={{ boxShadow: "var(--shadow-plate)" }}
     >
       <div className="relative w-full" style={{ aspectRatio: ratio, background: "var(--color-ink-700)" }}>
         <Image
@@ -74,31 +103,33 @@ function ProjectMedia({
           alt={work.alt}
           fill
           sizes={sizes}
-          className="object-cover transition-transform duration-[650ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-[1.025] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+          className="object-cover transition-transform duration-[650ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
           style={{ objectPosition }}
         />
-        {/* Very subtle contrast shift on hover — decorative only, no content */}
+        {/* Subtle contrast shift on hover — decorative only */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-[650ms] group-hover:opacity-100 motion-reduce:transition-none"
-          style={{ background: "linear-gradient(to top, rgba(5,5,9,0.28) 0%, transparent 55%)" }}
+          style={{ background: "linear-gradient(to top, rgba(5,5,9,0.32) 0%, transparent 55%)" }}
         />
       </div>
-    </figure>
+    </Link>
   );
 }
 
 /**
- * Project header: title + concise description, with optional minimal specs.
- * No eyebrow, rule, category label, or number — hierarchy comes from type/space.
+ * Project header: category + title + concise description, minimal specs, and a
+ * "View Case Study" cue. Hierarchy comes from type/space, not chrome.
  */
 function StudyText({ study, className }: { study: FeaturedStudy; className?: string }) {
   const { work, brief, layout } = study;
   return (
     <div className={className}>
+      <span className="overline">{work.category}</span>
       <h3
         className="serif"
         style={{
+          marginTop: "0.75rem",
           fontSize: layout === "lead" ? "clamp(2rem, 4vw, 3rem)" : "clamp(1.625rem, 3vw, 2.25rem)",
           fontWeight: 500,
           letterSpacing: "-0.02em",
@@ -106,7 +137,13 @@ function StudyText({ study, className }: { study: FeaturedStudy; className?: str
           color: "var(--color-bone)",
         }}
       >
-        {work.title}
+        <Link
+          href={`/work/${work.slug}`}
+          className="no-underline transition-colors duration-300 hover:text-[var(--color-violet-200)]"
+          style={{ color: "inherit" }}
+        >
+          {work.title}
+        </Link>
       </h3>
 
       <p
@@ -126,6 +163,8 @@ function StudyText({ study, className }: { study: FeaturedStudy; className?: str
           <SpecRow items={work.specs} />
         </div>
       ) : null}
+
+      <CaseStudyCue />
     </div>
   );
 }
@@ -136,7 +175,7 @@ function StudyBlock({ study }: { study: FeaturedStudy }) {
   // LEAD — image-dominant asymmetric feature (image 7 cols, text rail 5 cols).
   if (layout === "lead") {
     return (
-      <div className="grid grid-cols-1 lg:grid-cols-12 lg:items-center gap-x-12 gap-y-8">
+      <article className="group grid grid-cols-1 lg:grid-cols-12 lg:items-center gap-x-12 gap-y-8">
         <Reveal className="lg:col-span-7">
           <ProjectMedia
             work={work}
@@ -148,14 +187,14 @@ function StudyBlock({ study }: { study: FeaturedStudy }) {
         <Reveal delay={0.12} className="lg:col-span-5 lg:col-start-8">
           <StudyText study={study} />
         </Reveal>
-      </div>
+      </article>
     );
   }
 
   // PORTRAIT — quieter, text-led; narrow portrait image on the right.
   if (layout === "portrait") {
     return (
-      <div className="grid grid-cols-1 lg:grid-cols-12 lg:items-center gap-x-12 gap-y-8">
+      <article className="group grid grid-cols-1 lg:grid-cols-12 lg:items-center gap-x-12 gap-y-8">
         <Reveal className="order-1 lg:order-2 lg:col-span-5 lg:col-start-8">
           <ProjectMedia
             work={work}
@@ -167,13 +206,13 @@ function StudyBlock({ study }: { study: FeaturedStudy }) {
         <Reveal delay={0.12} className="order-2 lg:order-1 lg:col-span-6">
           <StudyText study={study} />
         </Reveal>
-      </div>
+      </article>
     );
   }
 
   // WIDE — full-width closing band with a concise text block beneath.
   return (
-    <div>
+    <article className="group">
       <Reveal>
         <ProjectMedia
           work={work}
@@ -185,7 +224,7 @@ function StudyBlock({ study }: { study: FeaturedStudy }) {
       <Reveal delay={0.12}>
         <StudyText study={study} className="mt-8 lg:mt-10 lg:max-w-2xl" />
       </Reveal>
-    </div>
+    </article>
   );
 }
 

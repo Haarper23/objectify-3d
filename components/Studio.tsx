@@ -93,8 +93,8 @@ export default function Studio() {
               {standards.map((s) => (
                 <div
                   key={s.label}
-                  className="grid grid-cols-[8rem_1fr]"
-                  style={{ gap: "1rem", alignItems: "baseline", paddingTop: "1.25rem", borderTop: "1px solid var(--color-line-soft)" }}
+                  className="grid grid-cols-1 gap-1 sm:grid-cols-[8rem_1fr] sm:gap-x-4"
+                  style={{ alignItems: "baseline", paddingTop: "1.25rem", borderTop: "1px solid var(--color-line-soft)" }}
                 >
                   <span
                     style={{

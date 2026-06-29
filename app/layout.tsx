@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Fraunces } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,6 +23,9 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
+  // Resolves relative Open Graph / Twitter image URLs. Set NEXT_PUBLIC_SITE_URL
+  // to the production origin at deploy time; falls back to localhost in dev.
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: "Objectify 3D — Custom 3D Printed Collectibles",
   description:
     "Premium custom 3D printed figures, stylized character models, and personalized collectible prints by Mehmet Eren Kiraz.",
@@ -37,7 +42,9 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#07070e] text-slate-100">
-        {children}
+        <Navbar />
+        <div className="flex-1">{children}</div>
+        <Footer />
       </body>
     </html>
   );

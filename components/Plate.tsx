@@ -37,29 +37,15 @@ export default function Plate({
 }) {
   const [hovered, setHovered] = useState(false);
 
-  return (
-    <figure
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
-      onBlur={() => setHovered(false)}
-      onClick={onClick}
-      role={interactive ? "button" : undefined}
-      tabIndex={interactive ? 0 : undefined}
-      aria-label={interactive ? label : undefined}
-      onKeyDown={
-        interactive
-          ? (e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                onClick?.();
-              }
-            }
-          : undefined
-      }
-      style={{ margin: 0, cursor: interactive ? "pointer" : "default", outlineOffset: "3px" }}
-    >
-      <div
+  const hoverHandlers = {
+    onMouseEnter: () => setHovered(true),
+    onMouseLeave: () => setHovered(false),
+    onFocus: () => setHovered(true),
+    onBlur: () => setHovered(false),
+  };
+
+  const frame = (
+    <div
         style={{
           position: "relative",
           overflow: "hidden",
@@ -147,6 +133,39 @@ export default function Plate({
           </span>
         )}
       </div>
+  );
+
+  // Interactive gallery cards are real <button>s — native keyboard activation
+  // (Enter/Space), focus, and semantics, with default button chrome reset.
+  if (interactive) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        aria-label={label}
+        {...hoverHandlers}
+        style={{
+          display: "block",
+          width: "100%",
+          margin: 0,
+          padding: 0,
+          border: "none",
+          background: "transparent",
+          font: "inherit",
+          color: "inherit",
+          textAlign: "left",
+          cursor: "pointer",
+          outlineOffset: "3px",
+        }}
+      >
+        {frame}
+      </button>
+    );
+  }
+
+  return (
+    <figure {...hoverHandlers} style={{ margin: 0 }}>
+      {frame}
     </figure>
   );
 }

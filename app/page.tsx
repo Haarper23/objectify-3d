@@ -1,4 +1,3 @@
-import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import FeaturedWorks from "@/components/FeaturedWorks";
@@ -8,12 +7,10 @@ import Services from "@/components/Services";
 import Process from "@/components/Process";
 import Studio from "@/components/Studio";
 import Contact from "@/components/Contact";
-import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
     <main className="overflow-hidden">
-      <Navbar />
       <Hero />
       <About />
       <FeaturedWorks />
@@ -23,7 +20,6 @@ export default function Home() {
       <Process />
       <Studio />
       <Contact />
-      <Footer />
     </main>
   );
 }

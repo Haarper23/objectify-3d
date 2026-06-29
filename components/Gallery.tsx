@@ -2,15 +2,47 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Plate from "./Plate";
 import SectionHeader from "./SectionHeader";
 import SpecRow from "./SpecRow";
 import { works, type Work } from "./works";
 
 function Lightbox({ work, onClose }: { work: Work; onClose: () => void }) {
+  const reduce = useReducedMotion();
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  // Move focus into the dialog on open and trap Tab within it. (Escape and
+  // focus restoration are handled by the parent Gallery effect.)
+  useEffect(() => {
+    closeRef.current?.focus();
+    const node = overlayRef.current;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Tab" || !node) return;
+      const focusables = Array.from(
+        node.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      );
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, []);
+
   return (
     <motion.div
+      ref={overlayRef}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -32,9 +64,9 @@ function Lightbox({ work, onClose }: { work: Work; onClose: () => void }) {
         role="dialog"
         aria-modal="true"
         aria-label={`${work.title} — ${work.category}`}
-        initial={{ scale: 0.9, opacity: 0 }}
+        initial={reduce ? false : { scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
+        exit={reduce ? { opacity: 0 } : { scale: 0.9, opacity: 0 }}
         transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
         onClick={(e) => e.stopPropagation()}
         className="flex flex-col md:flex-row"
@@ -103,6 +135,7 @@ function Lightbox({ work, onClose }: { work: Work; onClose: () => void }) {
       </motion.div>
 
       <button
+        ref={closeRef}
         onClick={onClose}
         aria-label="Close"
         style={{

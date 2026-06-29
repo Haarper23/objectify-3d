@@ -6,31 +6,23 @@ import SectionHeader from "./SectionHeader";
 const steps = [
   {
     number: "01",
-    title: "Idea & Request",
-    description:
-      "You share your concept — a character, a reference image, a brief description. The more detail, the better. We discuss scope and options.",
-    time: "Day 1",
+    title: "Send Your Idea",
+    description: "Reference images, sketches, or a simple description.",
   },
   {
     number: "02",
-    title: "Design & Preparation",
-    description:
-      "The model is sourced, adapted, or designed from scratch. File prep, scale decisions, and material choices happen here before anything is printed.",
-    time: "1–3 days",
+    title: "Design & Approval",
+    description: "We model the piece and share previews before production.",
   },
   {
     number: "03",
-    title: "Printing",
-    description:
-      "The print runs with precision settings tuned to the model's geometry. Layer by layer, the form emerges. Quality is checked throughout.",
-    time: "1–4 days",
+    title: "Print & Finish",
+    description: "Your piece is printed, cleaned, and finished by hand.",
   },
   {
     number: "04",
-    title: "Finishing & Delivery",
-    description:
-      "Support removal, sanding, painting, and final inspection. The piece is packed carefully and delivered ready for display.",
-    time: "2–5 days",
+    title: "Delivery",
+    description: "Carefully packaged and shipped to your address.",
   },
 ];
 
@@ -38,8 +30,8 @@ function Step({ step, index }: { step: (typeof steps)[0]; index: number }) {
   return (
     <Reveal delay={index * 0.08}>
       <div
-        className="grid grid-cols-1 md:grid-cols-[auto_1fr_auto] items-start"
-        style={{ gap: "clamp(1rem, 4vw, 3rem)", padding: "2.5rem 0", borderTop: "1px solid var(--color-line-soft)" }}
+        className="grid grid-cols-[auto_1fr] items-baseline"
+        style={{ gap: "clamp(1.25rem, 4vw, 3rem)", padding: "2.5rem 0", borderTop: "1px solid var(--color-line-soft)" }}
       >
         <span
           className="serif"
@@ -53,7 +45,7 @@ function Step({ step, index }: { step: (typeof steps)[0]; index: number }) {
         >
           {step.number}
         </span>
-        <div style={{ maxWidth: "560px" }}>
+        <div style={{ maxWidth: "640px" }}>
           <h3
             className="serif"
             style={{
@@ -61,7 +53,7 @@ function Step({ step, index }: { step: (typeof steps)[0]; index: number }) {
               fontWeight: 500,
               letterSpacing: "-0.01em",
               color: "var(--color-bone)",
-              marginBottom: "0.75rem",
+              marginBottom: "0.625rem",
             }}
           >
             {step.title}
@@ -70,19 +62,6 @@ function Step({ step, index }: { step: (typeof steps)[0]; index: number }) {
             {step.description}
           </p>
         </div>
-        <span
-          className="md:text-right"
-          style={{
-            fontFamily: "var(--font-mono), monospace",
-            fontSize: "var(--text-caption)",
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            color: "var(--color-faint)",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {step.time}
-        </span>
       </div>
     </Reveal>
   );
