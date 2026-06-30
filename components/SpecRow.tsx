@@ -13,13 +13,13 @@ export default function SpecRow({
         fontFamily: "var(--font-mono), ui-monospace, monospace",
         fontSize: "var(--text-caption)",
         letterSpacing: "0.04em",
-        color: "var(--color-faint)",
+        color: "var(--color-text-muted)",
         lineHeight: 1.6,
       }}
     >
       {items.map((item, i) => (
         <span key={item}>
-          {i > 0 && <span style={{ color: "var(--color-violet)", margin: "0 0.6em" }}>·</span>}
+          {i > 0 && <span style={{ color: "var(--color-text-muted)", margin: "0 0.6em" }}>·</span>}
           {item}
         </span>
       ))}

@@ -4,20 +4,13 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import InstagramIcon from "./InstagramIcon";
-
-const navLinks = [
-  { label: "Work", href: "/#work" },
-  { label: "Gallery", href: "/#gallery" },
-  { label: "Services", href: "/#services" },
-  { label: "Process", href: "/#process" },
-  { label: "Studio", href: "/#studio" },
-];
+import { brand, nav, contactInfo } from "@/src/data/site-content";
 
 function Wordmark() {
   return (
     <Link
       href="/"
-      aria-label="Objectify 3D — home"
+      aria-label={`${brand.name} — ana sayfa`}
       className="flex items-center gap-2.5 no-underline"
     >
       <span
@@ -25,21 +18,22 @@ function Wordmark() {
         style={{
           width: "2.25rem",
           height: "2.25rem",
-          background: "linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)",
+          background: "var(--color-surface-elevated)",
+          border: "1px solid var(--color-line)",
           borderRadius: "8px",
-          boxShadow: "0 0 16px rgba(124,58,237,0.35)",
         }}
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M8 1L14 4.5V11.5L8 15L2 11.5V4.5L8 1Z" stroke="white" strokeWidth="1.5" strokeLinejoin="round" />
-          <path d="M8 1V15M2 4.5L14 11.5M14 4.5L2 11.5" stroke="white" strokeWidth="1" strokeOpacity="0.5" />
+          <path d="M8 1L14 4.5V11.5L8 15L2 11.5V4.5L8 1Z" stroke="var(--color-text-primary)" strokeWidth="1.5" strokeLinejoin="round" />
+          <path d="M8 1V15M2 4.5L14 11.5M14 4.5L2 11.5" stroke="var(--color-text-primary)" strokeWidth="1" strokeOpacity="0.45" />
         </svg>
       </span>
       <span
         className="serif"
-        style={{ fontSize: "1.0625rem", fontWeight: 500, color: "var(--color-bone)", letterSpacing: "0.01em" }}
+        style={{ fontSize: "1.0625rem", fontWeight: 500, color: "var(--color-text-primary)", letterSpacing: "0.01em" }}
       >
-        Objectify <span style={{ fontStyle: "italic", color: "var(--color-violet-200)" }}>3D</span>
+        {brand.nameLead}{" "}
+        <span style={{ fontStyle: "italic", color: "var(--color-text-secondary)" }}>{brand.nameAccent}</span>
       </span>
     </Link>
   );
@@ -120,7 +114,7 @@ export default function Navbar() {
           right: 0,
           zIndex: 100,
           transition: "background 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease",
-          background: scrolled ? "rgba(7,7,14,0.85)" : "transparent",
+          background: scrolled ? "rgba(10,10,11,0.85)" : "transparent",
           backdropFilter: scrolled ? "blur(24px)" : "none",
           WebkitBackdropFilter: scrolled ? "blur(24px)" : "none",
           borderBottom: scrolled ? "1px solid var(--color-line-soft)" : "1px solid transparent",
@@ -138,20 +132,12 @@ export default function Navbar() {
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-9">
-            {navLinks.map((link) => (
+            {nav.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="no-underline"
-                style={{
-                  color: "var(--color-mist)",
-                  fontSize: "0.8125rem",
-                  fontWeight: 500,
-                  letterSpacing: "0.02em",
-                  transition: "color 0.2s ease",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-bone)")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-mist)")}
+                className="muted-link no-underline"
+                style={{ fontSize: "0.8125rem", fontWeight: 500, letterSpacing: "0.02em" }}
               >
                 {link.label}
               </Link>
@@ -160,40 +146,30 @@ export default function Navbar() {
 
           <div className="hidden md:flex items-center gap-5">
             <a
-              href="https://www.instagram.com/objectify3d/"
+              href={contactInfo.instagramBrand.href}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Objectify 3D on Instagram"
-              className="no-underline"
-              style={{ color: "var(--color-mist)", transition: "color 0.2s ease", display: "flex" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-violet-200)")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-mist)")}
+              aria-label={contactInfo.instagramBrand.label}
+              className="muted-link no-underline"
+              style={{ display: "flex" }}
             >
               <InstagramIcon size={18} />
             </a>
             <Link
               href="/#contact"
-              className="no-underline"
+              className="btn-ghost no-underline"
               style={{
                 padding: "0.55rem 1.35rem",
                 border: "1px solid var(--color-line)",
-                color: "var(--color-bone)",
+                color: "var(--color-text-primary)",
                 fontSize: "0.8125rem",
                 fontWeight: 500,
                 letterSpacing: "0.02em",
                 borderRadius: "9999px",
-                transition: "border-color 0.2s ease, background 0.2s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "rgba(167,139,250,0.5)";
-                e.currentTarget.style.background = "rgba(124,58,237,0.08)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "var(--color-line)";
-                e.currentTarget.style.background = "transparent";
+                transition: "border-color 0.2s ease, background 0.2s ease, color 0.2s ease",
               }}
             >
-              Start a Project
+              İletişime Geç
             </Link>
           </div>
 
@@ -202,7 +178,7 @@ export default function Navbar() {
             ref={toggleRef}
             className="md:hidden flex flex-col gap-1.5 p-2"
             onClick={() => setMenuOpen(!menuOpen)}
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-label={menuOpen ? "Menüyü kapat" : "Menüyü aç"}
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
             style={{ background: "none", border: "none", cursor: "pointer" }}
@@ -212,7 +188,7 @@ export default function Navbar() {
                 display: "block",
                 width: "22px",
                 height: "1.5px",
-                background: "var(--color-bone)",
+                background: "var(--color-text-primary)",
                 transition: "transform 0.3s ease, opacity 0.3s ease",
                 transform: menuOpen ? "translateY(4.5px) rotate(45deg)" : "none",
               }}
@@ -222,7 +198,7 @@ export default function Navbar() {
                 display: "block",
                 width: "22px",
                 height: "1.5px",
-                background: "var(--color-bone)",
+                background: "var(--color-text-primary)",
                 transition: "opacity 0.3s ease",
                 opacity: menuOpen ? 0 : 1,
               }}
@@ -232,7 +208,7 @@ export default function Navbar() {
                 display: "block",
                 width: "22px",
                 height: "1.5px",
-                background: "var(--color-bone)",
+                background: "var(--color-text-primary)",
                 transition: "transform 0.3s ease, opacity 0.3s ease",
                 transform: menuOpen ? "translateY(-4.5px) rotate(-45deg)" : "none",
               }}
@@ -249,7 +225,7 @@ export default function Navbar() {
             ref={menuRef}
             role="dialog"
             aria-modal="true"
-            aria-label="Site menu"
+            aria-label="Site menüsü"
             initial={reduce ? false : { opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={reduce ? { opacity: 0 } : { opacity: 0, y: -20 }}
@@ -258,7 +234,7 @@ export default function Navbar() {
               position: "fixed",
               inset: 0,
               zIndex: 90,
-              background: "rgba(5,5,9,0.97)",
+              background: "rgba(5,5,6,0.97)",
               backdropFilter: "blur(20px)",
               display: "flex",
               flexDirection: "column",
@@ -267,7 +243,7 @@ export default function Navbar() {
               gap: "2.25rem",
             }}
           >
-            {navLinks.map((link, i) => (
+            {nav.map((link, i) => (
               <motion.a
                 key={link.href}
                 href={link.href}
@@ -276,12 +252,7 @@ export default function Navbar() {
                 transition={{ delay: reduce ? 0 : i * 0.07 + 0.1 }}
                 onClick={() => setMenuOpen(false)}
                 className="serif no-underline"
-                style={{
-                  color: "var(--color-bone)",
-                  fontSize: "2.25rem",
-                  fontWeight: 500,
-                  letterSpacing: "-0.01em",
-                }}
+                style={{ color: "var(--color-text-primary)", fontSize: "2.25rem", fontWeight: 500, letterSpacing: "-0.01em" }}
               >
                 {link.label}
               </motion.a>
@@ -297,14 +268,14 @@ export default function Navbar() {
                 marginTop: "0.75rem",
                 padding: "0.8rem 2rem",
                 border: "1px solid var(--color-line)",
-                color: "var(--color-bone)",
+                color: "var(--color-text-primary)",
                 fontSize: "0.9375rem",
                 fontWeight: 500,
                 letterSpacing: "0.04em",
                 borderRadius: "9999px",
               }}
             >
-              Start a Project
+              İletişime Geç
             </motion.a>
           </motion.div>
         )}

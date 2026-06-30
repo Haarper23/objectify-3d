@@ -1,0 +1,5 @@
+# Place project images here
+
+Drop project images in this folder (e.g. `monster.jpg`) and reference them from
+`src/data/projects.ts` with a root-absolute path: `image: "/images/monster.jpg"`.
+This file just keeps the folder in version control.

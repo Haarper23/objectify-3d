@@ -1,36 +1,102 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# KİRAZ Üç Boyut
 
-## Getting Started
+Üç boyutlu üretim, modelleme ve proje portfolyo sitesi. Next.js 16 (App Router)
++ TypeScript + Tailwind CSS v4 ile geliştirildi.
 
-First, run the development server:
+Geliştirme sunucusunu çalıştırmak için:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ardından tarayıcıda [http://localhost:3000](http://localhost:3000) adresini açın.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## İçeriği düzenleme (Content editing)
 
-## Learn More
+Tüm düzenlenebilir metinler tek bir yerde toplanmıştır. Bileşenleri (component)
+düzenlemeniz gerekmez.
 
-To learn more about Next.js, take a look at the following resources:
+### 1. Hakkımda metni — `src/data/site-content.ts` → `aboutContent`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Açılış (landing) ekranındaki "Hakkımda" bölümünün tüm alanları burada bulunur ve
+**varsayılan olarak boştur**. Doldurmak istediğiniz alanı yazmanız yeterli; boş
+bıraktığınız alanlar otomatik olarak gizlenir.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```ts
+export const aboutContent: AboutContent = {
+  eyebrow: "",              // üst başlık (boşsa marka adı gösterilir)
+  name: "",                 // ad soyad
+  role: "",                 // ünvan / rol
+  introduction: "",         // kısa tanıtım
+  description: "",          // detaylı biyografi
+  secondaryDescription: "", // ek paragraf
+  experience: "",           // deneyim
+  approach: "",             // çalışma yaklaşımı
+  location: "",             // konum
+  primaryCtaLabel: "",      // ana buton metni (boşsa buton gizlenir → #contact)
+  secondaryCtaLabel: "",    // ikincil buton metni (boşsa gizlenir → #work)
+};
+```
 
-## Deploy on Vercel
+> "Hakkımda" başlığı sabittir ve her zaman görünür. Diğer tüm alanlar yukarıdan
+> düzenlenir.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 2. Diğer metinler — `src/data/site-content.ts`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Marka adı, navigasyon, hizmetler, süreç adımları, iletişim metinleri, footer ve
+SEO/metadata metinleri de bu dosyadadır.
+
+---
+
+## Yeni proje ekleme (Adding a project)
+
+Çalışmalar (gallery) bölümü tamamen modülerdir. Yeni bir proje eklemek için
+yalnızca iki adım gerekir — **hiçbir bileşen kodu düzenlenmez.**
+
+1. **Görseli ekleyin:** Proje görselini `public/images/` klasörüne koyun
+   (örn. `public/images/figur.jpg`).
+2. **Veriyi ekleyin:** `src/data/projects.ts` içindeki `projects` dizisine bir
+   nesne ekleyin:
+
+```ts
+export const projects: ProjectItem[] = [
+  {
+    id: "figur-01",
+    slug: "figur-01",
+    title: "Örnek Figür",
+    description: "Kısa açıklama (modalda gösterilir).",
+    category: "Figür",
+    image: "/images/figur.jpg",
+    alt: "Örnek figürün görseli",
+    tags: ["PLA", "Elde boyama"],
+    featured: true,
+    order: 1,
+  },
+];
+```
+
+`projects` dizisi boş olduğunda site otomatik olarak şu nazik boş durumu
+gösterir: **"Yeni çalışmalar yakında"**. İlk projeyi eklediğinizde bu mesaj
+kendiliğinden kaybolur.
+
+### Sıralama (Display order)
+
+- Sıralama `order` alanına göre yapılır (küçük sayı önce gelir).
+- `order` verilmeyen projeler dizideki sıralarına göre dizilir.
+
+### Öne çıkarma (Featured)
+
+- Bir projeyi `featured: true` ile işaretlerseniz, kendi sıralama grubunda öne
+  alınır (en başta gösterilir).
+
+---
+
+## Komutlar
+
+```bash
+npm run dev     # geliştirme sunucusu
+npm run build   # üretim derlemesi
+npm run lint    # ESLint
+```

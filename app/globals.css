@@ -1,33 +1,45 @@
 @import "tailwindcss";
 
 /*
-  Objectify 3D — design tokens
-  "Workshop Gallery" direction: cool near-black ink scale, warm bone neutral,
-  a single restrained violet accent, and a rare champagne metallic.
+  KİRAZ Üç Boyut — design tokens
+  Refined grayscale system: a near-black ink scale for backgrounds and surfaces,
+  a soft off-white accent, and layered neutral text tones for clear hierarchy.
+  No saturated colour — contrast and typography carry the design.
 */
 @theme {
-  /* Ink scale (cool near-blacks / surfaces) */
-  --color-ink-900: #050509;
-  --color-ink-800: #07070e;
-  --color-ink-700: #0a0a15;
-  --color-ink-600: #0f0f1a;
+  /* Semantic surfaces (page background → elevated cards) */
+  --color-background: #0a0a0b;
+  --color-surface: #111113;
+  --color-surface-elevated: #18181b;
 
-  /* Neutrals */
-  --color-bone: #ece9e2;
-  --color-mist: #94a3b8;
-  --color-faint: #64748b;
+  /* Ink scale (kept for existing references; all neutral grays) */
+  --color-ink-900: #050506;
+  --color-ink-800: #0a0a0b;
+  --color-ink-700: #111113;
+  --color-ink-600: #18181b;
 
-  /* Single accent */
-  --color-violet: #7c3aed;
-  --color-violet-200: #a78bfa;
-  --color-violet-600: #4f46e5;
+  /* Text hierarchy */
+  --color-text-primary: #f1f1f0;
+  --color-text-secondary: #a8a8a6;
+  --color-text-muted: #6f6f6d;
 
-  /* Rare metallic */
-  --color-champagne: #c8b68a;
+  /* Legacy neutral aliases (mapped to the new scale) */
+  --color-bone: #f1f1f0;
+  --color-mist: #a8a8a6;
+  --color-faint: #6f6f6d;
 
-  /* Hairlines */
-  --color-line: rgba(255, 255, 255, 0.08);
-  --color-line-soft: rgba(255, 255, 255, 0.05);
+  /* Accent — soft off-white / light gray (replaces the old violet) */
+  --color-accent: #ededec;
+  --color-accent-contrast: #0a0a0b;
+  /* Legacy accent aliases now resolve to grayscale tones */
+  --color-violet: #8a8a88;
+  --color-violet-200: #e6e6e4;
+  --color-violet-600: #9a9a98;
+
+  /* Hairlines / borders */
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-line: rgba(255, 255, 255, 0.09);
+  --color-line-soft: rgba(255, 255, 255, 0.06);
 
   /* Fonts (wired in layout.tsx) */
   --font-sans: var(--font-geist-sans);
@@ -48,13 +60,13 @@
   --radius-lg: 24px;
 
   /* Shadows */
-  --shadow-plate: 0 24px 60px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 80px rgba(109, 40, 217, 0.18);
+  --shadow-plate: 0 24px 60px rgba(0, 0, 0, 0.55);
+  --shadow-glow: 0 0 80px rgba(255, 255, 255, 0.04);
 }
 
 :root {
-  --background: #07070e;
-  --foreground: #ece9e2;
+  --background: #0a0a0b;
+  --foreground: #f1f1f0;
 }
 
 html {
@@ -75,18 +87,18 @@ body {
 }
 
 ::selection {
-  background: rgba(124, 58, 237, 0.3);
-  color: #f1f5f9;
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
 }
 
 ::-webkit-scrollbar {
   width: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0a15;
+  background: #111113;
 }
 ::-webkit-scrollbar-thumb {
-  background: #5b21b6;
+  background: #3a3a3d;
   border-radius: 99px;
 }
 
@@ -100,40 +112,53 @@ body {
   font-weight: 500;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--color-violet-200);
+  color: var(--color-text-secondary);
 }
 
 /* Footer hover effects — used by the Server Component footer */
 .footer-nav-link {
-  color: #94a3b8;
+  color: #a8a8a6;
   transition: color 0.2s ease;
 }
 .footer-nav-link:hover {
-  color: #a78bfa;
+  color: #f1f1f0;
 }
 
 .footer-social-link {
-  color: #64748b;
+  color: #6f6f6d;
   transition: color 0.2s ease;
 }
 .footer-social-link:hover {
-  color: #7c3aed;
+  color: #f1f1f0;
 }
 
-/* Hero primary CTA hover — replaces JS onMouseEnter/onMouseLeave */
-.hero-btn-primary {
-  box-shadow: 0 4px 24px rgba(124, 58, 237, 0.35);
+/* Inline contact / nav link hover — replaces JS onMouseEnter/onMouseLeave. */
+.muted-link {
+  color: var(--color-text-secondary);
+  transition: color 0.2s ease;
 }
-.hero-btn-primary:hover {
+.muted-link:hover {
+  color: var(--color-text-primary);
+}
+
+/* Primary CTA — solid off-white button on dark. */
+.btn-primary {
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(124, 58, 237, 0.5);
+  background: #ffffff;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
 /* Outline / ghost button hover — pairs with the primary CTA. Reusable. */
-.hero-btn-ghost:hover {
-  border-color: rgba(167, 139, 250, 0.5) !important;
-  color: var(--color-violet-200) !important;
-  background: rgba(124, 58, 237, 0.08) !important;
+.btn-ghost:hover {
+  border-color: rgba(255, 255, 255, 0.28) !important;
+  color: var(--color-text-primary) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
 }
 
 /* Visible keyboard focus — applies site-wide to links, buttons, and any
@@ -146,7 +171,7 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 2px solid var(--color-violet-200);
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
 }
 
@@ -158,7 +183,7 @@ textarea:focus-visible {
   font-size: var(--text-overline);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--color-mist);
+  color: var(--color-text-secondary);
 }
 .field-control {
   width: 100%;
@@ -166,33 +191,33 @@ textarea:focus-visible {
   border: 1px solid var(--color-line);
   border-radius: 12px;
   padding: 0.8rem 1rem;
-  color: var(--color-bone);
+  color: var(--color-text-primary);
   font-family: var(--font-sans);
   font-size: 0.9375rem;
   line-height: 1.5;
   transition: border-color 0.2s ease, background 0.2s ease;
 }
 .field-control::placeholder {
-  color: var(--color-faint);
+  color: var(--color-text-muted);
 }
 .field-control:hover {
-  border-color: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.18);
 }
 .field-control:focus {
-  border-color: rgba(167, 139, 250, 0.6);
-  background: rgba(124, 58, 237, 0.06);
+  border-color: rgba(255, 255, 255, 0.32);
+  background: rgba(255, 255, 255, 0.04);
 }
 .field-control[aria-invalid="true"] {
-  border-color: #f87171;
+  border-color: #b91c1c;
 }
 .field-error {
   margin-top: 0.4rem;
   font-size: 0.8125rem;
-  color: #fca5a5;
+  color: #e5e5e5;
 }
 
-/* Hero wireframe accent — very slow, atmospheric drift. Transform/opacity only,
-   so it stays cheap; neutralized entirely by the reduced-motion block below. */
+/* Landing wireframe accent — very slow, atmospheric drift. Transform/opacity
+   only, so it stays cheap; neutralized entirely by the reduced-motion block. */
 @keyframes objct-spin {
   to {
     transform: rotate(360deg);

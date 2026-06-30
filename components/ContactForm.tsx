@@ -6,15 +6,15 @@ type Status = "idle" | "submitting" | "success";
 type Errors = Partial<Record<"name" | "email" | "description", string>>;
 
 const projectTypes = [
-  "Custom figure",
-  "Personalized gift",
-  "Character / fan art",
-  "Display / decorative piece",
-  "Couple / portrait miniature",
-  "Other",
+  "Özel figür",
+  "Kişiye özel hediye",
+  "Karakter / hayran işi",
+  "Dekoratif / sergi parçası",
+  "Çift / portre minyatürü",
+  "Diğer",
 ];
-const sizes = ["Mini (under 10 cm)", "Standard (10–20 cm)", "Large (20 cm+)", "Not sure yet"];
-const budgets = ["Under $100", "$100–$300", "$300–$600", "$600+", "Not sure yet"];
+const sizes = ["Mini (10 cm altı)", "Standart (10–20 cm)", "Büyük (20 cm+)", "Henüz emin değilim"];
+const budgets = ["1.000 ₺ altı", "1.000–3.000 ₺", "3.000–6.000 ₺", "6.000 ₺ üzeri", "Henüz emin değilim"];
 
 const MAX_FILE_BYTES = 8 * 1024 * 1024; // 8 MB
 
@@ -51,11 +51,11 @@ export default function ContactForm() {
     const email = (form.elements.namedItem("email") as HTMLInputElement)?.value.trim();
     const description = (form.elements.namedItem("description") as HTMLTextAreaElement)?.value.trim();
 
-    if (!name) next.name = "Please enter your name.";
-    if (!email) next.email = "Please enter your email.";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) next.email = "Please enter a valid email address.";
-    if (!description) next.description = "Tell us a little about your project.";
-    else if (description.length < 10) next.description = "A bit more detail helps us quote accurately.";
+    if (!name) next.name = "Lütfen adınızı girin.";
+    if (!email) next.email = "Lütfen e-posta adresinizi girin.";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) next.email = "Lütfen geçerli bir e-posta adresi girin.";
+    if (!description) next.description = "Projenizden kısaca bahsedin.";
+    else if (description.length < 10) next.description = "Biraz daha detay, doğru bir fiyat vermemize yardımcı olur.";
     return next;
   }
 
@@ -67,13 +67,13 @@ export default function ContactForm() {
       return;
     }
     if (!file.type.startsWith("image/")) {
-      setFileError("Please choose an image file.");
+      setFileError("Lütfen bir görsel dosyası seçin.");
       setFileName("");
       e.target.value = "";
       return;
     }
     if (file.size > MAX_FILE_BYTES) {
-      setFileError("Image must be under 8 MB.");
+      setFileError("Görsel 8 MB'tan küçük olmalı.");
       setFileName("");
       e.target.value = "";
       return;
@@ -105,7 +105,7 @@ export default function ContactForm() {
     } catch {
       // Keep the user's input; surface a recoverable state.
       setStatus("idle");
-      setErrors({ description: "Something went wrong. Please try again." });
+      setErrors({ description: "Bir sorun oluştu. Lütfen tekrar deneyin." });
     }
   }
 
@@ -118,8 +118,8 @@ export default function ContactForm() {
         style={{
           padding: "clamp(1.75rem, 4vw, 2.5rem)",
           borderRadius: "var(--radius-lg)",
-          border: "1px solid rgba(167,139,250,0.35)",
-          background: "rgba(124,58,237,0.06)",
+          border: "1px solid var(--color-line)",
+          background: "rgba(255,255,255,0.03)",
         }}
       >
         <span
@@ -129,9 +129,9 @@ export default function ContactForm() {
             width: "2.75rem",
             height: "2.75rem",
             borderRadius: "50%",
-            background: "rgba(124,58,237,0.18)",
-            border: "1px solid rgba(167,139,250,0.4)",
-            color: "var(--color-violet-200)",
+            background: "rgba(255,255,255,0.08)",
+            border: "1px solid var(--color-line)",
+            color: "var(--color-text-primary)",
             marginBottom: "1.25rem",
           }}
         >
@@ -139,21 +139,21 @@ export default function ContactForm() {
             <path d="M20 6L9 17l-5-5" />
           </svg>
         </span>
-        <h3 className="serif" style={{ fontSize: "1.5rem", fontWeight: 500, color: "var(--color-bone)" }}>
-          Request received
+        <h3 className="serif" style={{ fontSize: "1.5rem", fontWeight: 500, color: "var(--color-text-primary)" }}>
+          Talebiniz alındı
         </h3>
-        <p style={{ marginTop: "0.75rem", color: "var(--color-mist)", fontSize: "0.9375rem", lineHeight: 1.7, maxWidth: "40ch" }}>
-          Thanks — your project request has been received. We&apos;ll get back to you within 1–2 business days.
+        <p style={{ marginTop: "0.75rem", color: "var(--color-text-secondary)", fontSize: "0.9375rem", lineHeight: 1.7, maxWidth: "40ch" }}>
+          Teşekkürler — proje talebiniz bize ulaştı. 1–2 iş günü içinde size geri döneceğiz.
         </p>
         <button
           type="button"
           onClick={() => setStatus("idle")}
-          className="hero-btn-ghost"
+          className="btn-ghost"
           style={{
             marginTop: "1.75rem",
             padding: "0.7rem 1.6rem",
             border: "1px solid var(--color-line)",
-            color: "var(--color-bone)",
+            color: "var(--color-text-primary)",
             fontSize: "0.875rem",
             fontWeight: 500,
             borderRadius: "9999px",
@@ -162,7 +162,7 @@ export default function ContactForm() {
             transition: "border-color 0.2s ease, color 0.2s ease, background 0.2s ease",
           }}
         >
-          Send another request
+          Yeni bir talep gönder
         </button>
       </div>
     );
@@ -173,7 +173,7 @@ export default function ContactForm() {
       ref={formRef}
       onSubmit={handleSubmit}
       noValidate
-      aria-label="Project inquiry"
+      aria-label="Proje talebi"
       style={{
         padding: "clamp(1.5rem, 4vw, 2.5rem)",
         borderRadius: "var(--radius-lg)",
@@ -185,7 +185,7 @@ export default function ContactForm() {
         {/* Name */}
         <div>
           <label htmlFor={fid("name")} className="field-label">
-            Name
+            Ad
           </label>
           <input
             id={fid("name")}
@@ -193,7 +193,7 @@ export default function ContactForm() {
             type="text"
             autoComplete="name"
             className="field-control"
-            placeholder="Your name"
+            placeholder="Adınız"
             aria-required="true"
             aria-invalid={!!errors.name}
             aria-describedby={errors.name ? fid("name-err") : undefined}
@@ -208,7 +208,7 @@ export default function ContactForm() {
         {/* Email */}
         <div>
           <label htmlFor={fid("email")} className="field-label">
-            Email
+            E-posta
           </label>
           <input
             id={fid("email")}
@@ -216,7 +216,7 @@ export default function ContactForm() {
             type="email"
             autoComplete="email"
             className="field-control"
-            placeholder="you@example.com"
+            placeholder="ornek@eposta.com"
             aria-required="true"
             aria-invalid={!!errors.email}
             aria-describedby={errors.email ? fid("email-err") : undefined}
@@ -231,11 +231,11 @@ export default function ContactForm() {
         {/* Project type */}
         <div>
           <label htmlFor={fid("projectType")} className="field-label">
-            Project type
+            Proje türü
           </label>
           <select id={fid("projectType")} name="projectType" className="field-control" defaultValue="">
             <option value="" disabled>
-              Select a type
+              Bir tür seçin
             </option>
             {projectTypes.map((t) => (
               <option key={t} value={t}>
@@ -248,11 +248,11 @@ export default function ContactForm() {
         {/* Approximate size */}
         <div>
           <label htmlFor={fid("size")} className="field-label">
-            Approximate size
+            Yaklaşık boyut
           </label>
           <select id={fid("size")} name="size" className="field-control" defaultValue="">
             <option value="" disabled>
-              Select a size
+              Bir boyut seçin
             </option>
             {sizes.map((s) => (
               <option key={s} value={s}>
@@ -265,11 +265,11 @@ export default function ContactForm() {
         {/* Budget */}
         <div>
           <label htmlFor={fid("budget")} className="field-label">
-            Budget range
+            Bütçe aralığı
           </label>
           <select id={fid("budget")} name="budget" className="field-control" defaultValue="">
             <option value="" disabled>
-              Select a range
+              Bir aralık seçin
             </option>
             {budgets.map((b) => (
               <option key={b} value={b}>
@@ -282,14 +282,14 @@ export default function ContactForm() {
         {/* Deadline */}
         <div>
           <label htmlFor={fid("deadline")} className="field-label">
-            Deadline
+            Termin
           </label>
           <input
             id={fid("deadline")}
             name="deadline"
             type="text"
             className="field-control"
-            placeholder="Flexible, or a specific date"
+            placeholder="Esnek ya da belirli bir tarih"
           />
         </div>
       </div>
@@ -297,7 +297,7 @@ export default function ContactForm() {
       {/* Description */}
       <div style={{ marginTop: "1.25rem" }}>
         <label htmlFor={fid("description")} className="field-label">
-          Project description
+          Proje açıklaması
         </label>
         <textarea
           id={fid("description")}
@@ -305,7 +305,7 @@ export default function ContactForm() {
           rows={5}
           className="field-control"
           style={{ resize: "vertical" }}
-          placeholder="What would you like made? Characters, references, finish, anything that helps."
+          placeholder="Ne ürettirmek istiyorsunuz? Karakterler, referanslar, bitiriş — yardımcı olacak her detay."
           aria-required="true"
           aria-invalid={!!errors.description}
           aria-describedby={errors.description ? fid("description-err") : undefined}
@@ -320,7 +320,7 @@ export default function ContactForm() {
       {/* Reference image upload */}
       <div style={{ marginTop: "1.25rem" }}>
         <label htmlFor={fid("reference")} className="field-label">
-          Reference image <span style={{ textTransform: "none", letterSpacing: 0 }}>(optional)</span>
+          Referans görsel <span style={{ textTransform: "none", letterSpacing: 0 }}>(isteğe bağlı)</span>
         </label>
         <input
           ref={fileRef}
@@ -341,9 +341,9 @@ export default function ContactForm() {
         ) : (
           <p
             id={fid("reference-hint")}
-            style={{ marginTop: "0.4rem", fontSize: "0.8125rem", color: "var(--color-faint)" }}
+            style={{ marginTop: "0.4rem", fontSize: "0.8125rem", color: "var(--color-text-muted)" }}
           >
-            {fileName ? `Selected: ${fileName}` : "JPG or PNG, up to 8 MB."}
+            {fileName ? `Seçilen: ${fileName}` : "JPG veya PNG, en fazla 8 MB."}
           </p>
         )}
       </div>
@@ -353,11 +353,9 @@ export default function ContactForm() {
         <button
           type="submit"
           disabled={status === "submitting"}
-          className="hero-btn-primary no-underline inline-flex items-center gap-2"
+          className="btn-primary no-underline inline-flex items-center gap-2"
           style={{
             padding: "0.95rem 2.1rem",
-            background: "linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)",
-            color: "white",
             fontWeight: 600,
             fontSize: "0.9375rem",
             letterSpacing: "0.02em",
@@ -365,10 +363,9 @@ export default function ContactForm() {
             border: "none",
             cursor: status === "submitting" ? "wait" : "pointer",
             opacity: status === "submitting" ? 0.7 : 1,
-            transition: "transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease",
           }}
         >
-          {status === "submitting" ? "Sending…" : "Request a Quote"}
+          {status === "submitting" ? "Gönderiliyor…" : "Teklif İste"}
           {status !== "submitting" && (
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
               <path d="M5 12h14M12 5l7 7-7 7" />

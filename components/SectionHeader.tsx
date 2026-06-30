@@ -46,14 +46,14 @@ export default function SectionHeader({
             fontWeight: 500,
             lineHeight: 1.05,
             letterSpacing: "-0.02em",
-            color: "var(--color-bone)",
+            color: "var(--color-text-primary)",
           }}
         >
           {title}
           {accent && (
             <>
               {" "}
-              <span style={{ fontStyle: "italic", color: "var(--color-violet-200)" }}>
+              <span style={{ fontStyle: "italic", color: "var(--color-text-secondary)" }}>
                 {accent}
               </span>
             </>

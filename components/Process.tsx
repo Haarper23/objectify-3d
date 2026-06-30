@@ -1,32 +1,8 @@
-"use client";
-
 import Reveal from "./Reveal";
 import SectionHeader from "./SectionHeader";
+import { processContent, type ProcessStep } from "@/src/data/site-content";
 
-const steps = [
-  {
-    number: "01",
-    title: "Send Your Idea",
-    description: "Reference images, sketches, or a simple description.",
-  },
-  {
-    number: "02",
-    title: "Design & Approval",
-    description: "We model the piece and share previews before production.",
-  },
-  {
-    number: "03",
-    title: "Print & Finish",
-    description: "Your piece is printed, cleaned, and finished by hand.",
-  },
-  {
-    number: "04",
-    title: "Delivery",
-    description: "Carefully packaged and shipped to your address.",
-  },
-];
-
-function Step({ step, index }: { step: (typeof steps)[0]; index: number }) {
+function Step({ step, index }: { step: ProcessStep; index: number }) {
   return (
     <Reveal delay={index * 0.08}>
       <div
@@ -40,7 +16,7 @@ function Step({ step, index }: { step: (typeof steps)[0]; index: number }) {
             fontWeight: 400,
             fontStyle: "italic",
             lineHeight: 1,
-            color: "rgba(167,139,250,0.55)",
+            color: "rgba(255,255,255,0.18)",
           }}
         >
           {step.number}
@@ -52,13 +28,13 @@ function Step({ step, index }: { step: (typeof steps)[0]; index: number }) {
               fontSize: "clamp(1.375rem, 2.5vw, 1.875rem)",
               fontWeight: 500,
               letterSpacing: "-0.01em",
-              color: "var(--color-bone)",
+              color: "var(--color-text-primary)",
               marginBottom: "0.625rem",
             }}
           >
             {step.title}
           </h3>
-          <p style={{ color: "var(--color-mist)", fontSize: "1rem", lineHeight: 1.75 }}>
+          <p style={{ color: "var(--color-text-secondary)", fontSize: "1rem", lineHeight: 1.75 }}>
             {step.description}
           </p>
         </div>
@@ -72,19 +48,19 @@ export default function Process() {
     <section
       id="process"
       className="relative overflow-hidden py-20 px-5 md:py-32 md:px-8"
-      style={{ background: "var(--color-ink-700)" }}
+      style={{ background: "var(--color-surface)" }}
     >
       <div className="mx-auto" style={{ maxWidth: "1100px" }}>
         <SectionHeader
-          overline="Process"
-          title="How It"
-          accent="Works"
-          lead="From first message to finished piece — a transparent, hands-on process with no surprises."
+          overline={processContent.overline}
+          title={processContent.title}
+          accent={processContent.accent}
+          lead={processContent.lead}
           className="mb-12 md:mb-16"
         />
 
         <div style={{ borderBottom: "1px solid var(--color-line-soft)" }}>
-          {steps.map((step, i) => (
+          {processContent.steps.map((step, i) => (
             <Step key={step.number} step={step} index={i} />
           ))}
         </div>
